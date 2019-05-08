@@ -94,7 +94,7 @@ class Workbook extends AbstractWorkbook
     public function addNewSheet()
     {
         $newSheetIndex = count($this->worksheets);
-        $sheet = new Sheet($newSheetIndex, $this->internalId);
+        $sheet = new Sheet($newSheetIndex);
 
         $worksheetFilesFolder = $this->fileSystemHelper->getXlWorksheetsFolder();
         $worksheet = new Worksheet(

@@ -16,9 +16,6 @@ abstract class AbstractWorkbook implements WorkbookInterface
     /** @var bool Whether new sheets should be automatically created when the max rows limit per sheet is reached */
     protected $shouldCreateNewSheetsAutomatically;
 
-    /** @var string Timestamp based unique ID identifying the workbook */
-    protected $internalId;
-
     /** @var WorksheetInterface[] Array containing the workbook's sheets */
     protected $worksheets = [];
 
@@ -33,7 +30,6 @@ abstract class AbstractWorkbook implements WorkbookInterface
     public function __construct($shouldCreateNewSheetsAutomatically, $defaultRowStyle)
     {
         $this->shouldCreateNewSheetsAutomatically = $shouldCreateNewSheetsAutomatically;
-        $this->internalId = uniqid();
     }
 
     /**

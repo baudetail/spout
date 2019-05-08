@@ -25,22 +25,17 @@ class Sheet implements SheetInterface
     /** @var string Name of the sheet */
     protected $name;
 
-    /** @var bool Whether the sheet was the active one */
-    protected $isActive;
-
     /**
      * @param XMLReader $xmlReader XML Reader, positioned on the "<table:table>" element
      * @param int $sheetIndex Index of the sheet, based on order in the workbook (zero-based)
-     * @param string $sheetName Name of the sheet
-     * @param bool $isSheetActive Whether the sheet was defined as active
      * @param \Box\Spout\Reader\ODS\ReaderOptions $options Reader's current options
+     * @param string $sheetName Name of the sheet
      */
-    public function __construct($xmlReader, $sheetIndex, $sheetName, $isSheetActive, $options)
+    public function __construct($xmlReader, $sheetIndex, $sheetName, $options)
     {
         $this->rowIterator = new RowIterator($xmlReader, $options);
         $this->index = $sheetIndex;
         $this->name = $sheetName;
-        $this->isActive = $isSheetActive;
     }
 
     /**
@@ -68,14 +63,5 @@ class Sheet implements SheetInterface
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * @api
-     * @return bool Whether the sheet was defined as active
-     */
-    public function isActive()
-    {
-        return $this->isActive;
     }
 }

@@ -3,8 +3,8 @@
 namespace Box\Spout\Writer\XLSX;
 
 use Box\Spout\Writer\AbstractMultiSheetsWriter;
-use Box\Spout\Writer\Style\StyleBuilder;
 use Box\Spout\Writer\XLSX\Internal\Workbook;
+use Box\Spout\Writer\Style\StyleBuilder;
 
 /**
  * Class Writer

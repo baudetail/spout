@@ -26,13 +26,10 @@ class ODS implements EscaperInterface
             // 'ENT_DISALLOWED' ensures that invalid characters in the given document type are replaced.
             // Otherwise control characters like a vertical tab "\v" will make the XML document unreadable by the XML processor
             // @link https://github.com/box/spout/issues/329
-            $replacedString = htmlspecialchars($string, ENT_NOQUOTES | ENT_DISALLOWED, 'UTF-8');
+            $replacedString = htmlspecialchars($string, ENT_QUOTES | ENT_DISALLOWED);
         } else {
-            // We are on hhvm or any other engine that does not support ENT_DISALLOWED.
-            //
-            // @NOTE: Using ENT_NOQUOTES as only XML entities ('<', '>', '&') need to be encoded.
-            //        Single and double quotes can be left as is.
-            $escapedString =  htmlspecialchars($string, ENT_NOQUOTES, 'UTF-8');
+            // We are on hhvm or any other engine that does not support ENT_DISALLOWED
+            $escapedString =  htmlspecialchars($string, ENT_QUOTES);
 
             // control characters values are from 0 to 1F (hex values) in the ASCII table
             // some characters should not be escaped though: "\t", "\r" and "\n".
@@ -55,12 +52,6 @@ class ODS implements EscaperInterface
      */
     public function unescape($string)
     {
-        // ==============
-        // =   WARNING  =
-        // ==============
-        // It is assumed that the given string has already had its XML entities decoded.
-        // This is true if the string is coming from a DOMNode (as DOMNode already decode XML entities on creation).
-        // Therefore there is no need to call "htmlspecialchars_decode()".
-        return $string;
+        return htmlspecialchars_decode($string, ENT_QUOTES);
     }
 }

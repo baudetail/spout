@@ -116,7 +116,6 @@ EOD;
 
         $spaceToPreserve = $this->shouldUseCellAutosizing ? 1024 * 1024 : 512;
         fwrite($this->sheetFilePointer, str_repeat(' ', $spaceToPreserve));
-			//fwrite($this->sheetFilePointer, self::SHEET_XML_FILE_HEADER); // before autosize
         fwrite($this->sheetFilePointer, '<sheetData>');
     }
 
@@ -184,7 +183,7 @@ EOD;
      *          Example $dataRow = ['data1', 1234, null, '', 'data5'];
      * @return bool Whether the given row is empty
      */
-    protected function isEmptyRow($dataRow)
+    private function isEmptyRow($dataRow)
     {
         $numCells = count($dataRow);
         // using "reset()" instead of "$dataRow[0]" because $dataRow can be an associative array
@@ -201,7 +200,7 @@ EOD;
      * @throws \Box\Spout\Common\Exception\IOException If the data cannot be written
      * @throws \Box\Spout\Common\Exception\InvalidArgumentException If a cell value's type is not supported
      */
-    protected function addNonEmptyRow($dataRow, $style)
+    private function addNonEmptyRow($dataRow, $style)
     {
         $cellNumber = 0;
         $rowIndex = $this->lastWrittenRowIndex + 1;
@@ -214,7 +213,7 @@ EOD;
         }
 
         foreach($dataRow as $cellValue) {
-            $rowXML .= $this->getCellXML($rowIndex, $cellNumber, $cellValue, $style->getId());
+            $rowXML .= $this->getCellXML($rowIndex, $cellNumber, $cellValue, $style);
             $cellNumber++;
         }
 
@@ -273,7 +272,7 @@ EOD;
      * @return string The XML fragment representing the cell
      * @throws InvalidArgumentException If the string exceeds the maximum number of characters allowed per cell
      */
-    protected function getCellXMLFragmentForNonEmptyString($cellValue)
+    private function getCellXMLFragmentForNonEmptyString($cellValue)
     {
         if ($this->stringHelper->getStringLength($cellValue) > self::MAX_CHARACTERS_PER_CELL) {
             throw new InvalidArgumentException('Trying to add a value that exceeds the maximum number of characters allowed in a cell (32,767)');

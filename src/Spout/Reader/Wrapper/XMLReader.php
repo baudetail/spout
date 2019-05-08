@@ -1,7 +1,6 @@
 <?php
 
 namespace Box\Spout\Reader\Wrapper;
-use DOMNode;
 
 
 /**
@@ -29,10 +28,13 @@ class XMLReader extends \XMLReader
         $wasOpenSuccessful = false;
         $realPathURI = $this->getRealPathURIForFileInZip($zipFilePath, $fileInsideZipPath);
 
-        // We need to check first that the file we are trying to read really exist because:
-        //  - PHP emits a warning when trying to open a file that does not exist.
-        //  - HHVM does not check if file exists within zip file (@link https://github.com/facebook/hhvm/issues/5779)
-        if ($this->fileExistsWithinZip($realPathURI)) {
+        // HHVM does not check if file exists within zip file
+        // @link https://github.com/facebook/hhvm/issues/5779
+        if ($this->isRunningHHVM()) {
+            if ($this->fileExistsWithinZip($realPathURI)) {
+                $wasOpenSuccessful = $this->open($realPathURI, null, LIBXML_NONET);
+            }
+        } else {
             $wasOpenSuccessful = $this->open($realPathURI, null, LIBXML_NONET);
         }
 
@@ -50,6 +52,16 @@ class XMLReader extends \XMLReader
     public function getRealPathURIForFileInZip($zipFilePath, $fileInsideZipPath)
     {
         return (self::ZIP_WRAPPER . realpath($zipFilePath) . '#' . $fileInsideZipPath);
+    }
+
+    /**
+     * Returns whether the current environment is HHVM
+     *
+     * @return bool TRUE if running on HHVM, FALSE otherwise
+     */
+    protected function isRunningHHVM()
+    {
+        return defined('HHVM_VERSION');
     }
 
     /**
@@ -163,13 +175,5 @@ class XMLReader extends \XMLReader
         $currentNodeName = ($hasPrefix) ? $this->name : $this->localName;
 
         return ($this->nodeType === $nodeType && $currentNodeName === $nodeName);
-    }
-
-    /**
-     * @return string The name of the current node, un-prefixed
-     */
-    public function getCurrentNodeName()
-    {
-        return $this->localName;
     }
 }
